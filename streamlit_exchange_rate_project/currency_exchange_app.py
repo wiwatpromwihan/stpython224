@@ -12,7 +12,7 @@ st.caption("ข้อมูลอัตราแลกเปลี่ยนจ�
 
 # เก็บ API Key ใน session เพื่อไม่ให้ต้องกรอกซ้ำทุกครั้งที่ Streamlit rerun
 if "api_key" not in st.session_state:
-    st.session_state.api_key = ""
+    st.session_state.api_key = "6ceca762faa656b68ebb40e7"
 
 api_key = st.text_input(
     "ExchangeRate-API Key",
