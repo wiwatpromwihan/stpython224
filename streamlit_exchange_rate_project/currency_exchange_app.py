@@ -10,17 +10,12 @@ st.set_page_config(
 st.title("💱 โปรแกรมแปลงอัตราแลกเปลี่ยนเงินตรา")
 st.caption("ข้อมูลอัตราแลกเปลี่ยนจาก ExchangeRate-API")
 
-# เก็บ API Key ใน session เพื่อไม่ให้ต้องกรอกซ้ำทุกครั้งที่ Streamlit rerun
-if "api_key" not in st.session_state:
-    st.session_state.api_key = "6ceca762faa656b68ebb40e7"
-
-api_key = st.text_input(
-    "ExchangeRate-API Key",
-    value=st.session_state.api_key,
-    type="password",
-    placeholder="กรอก API Key จาก exchangerate-api.com"
-)
-st.session_state.api_key = api_key.strip()
+# API Key ถูกเก็บไว้ในระบบ ไม่แสดงผลหรือให้ผู้ใช้งานกรอกในหน้าเว็บ
+# ลำดับการค้นหา: st.secrets (แนะนำสำหรับ deploy) -> ค่า default ที่ฝังไว้ในโค้ด
+try:
+    api_key = st.secrets["EXCHANGE_RATE_API_KEY"]
+except Exception:
+    api_key = "6ceca762faa656b68ebb40e7"
 
 @st.cache_data(ttl=3600, show_spinner=False)
 def get_supported_codes(api_key: str):
@@ -49,7 +44,7 @@ def convert_currency(api_key: str, base: str, target: str, amount: float):
     return data
 
 if not api_key:
-    st.info("กรุณากรอก API Key ก่อนใช้งาน")
+    st.error("ยังไม่ได้ตั้งค่า API Key ในระบบ กรุณาติดต่อผู้ดูแลระบบ")
     st.stop()
 
 try:
@@ -141,6 +136,3 @@ if st.button("คำนวณอัตราแลกเปลี่ยน", typ
             st.error("รูปแบบข้อมูลที่ได้รับจาก API ไม่ถูกต้อง")
 
 st.divider()
-st.caption(
-    "หมายเหตุ: ต้องสมัครและนำ API Key จาก https://www.exchangerate-api.com/ มาใช้งาน"
-)
